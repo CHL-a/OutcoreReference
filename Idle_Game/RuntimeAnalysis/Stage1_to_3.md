@@ -32,4 +32,4 @@ For this part, we would like to go to the first coin since it is the closest and
 |Orange|0|7+a|0|
 |Yellow|0|4+2a|0|
 
-In this case, yellow is more shorter 
+In this case, yellow is more shorter if the worker bought the left turn but both paths are as efficient if the player didn't buy at all, regardless yellow and left turn is the shortest path by 3 steps.
