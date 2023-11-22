@@ -1,3 +1,16 @@
+// Upfront options:
+const __settings = {
+	boughtFunctions: {
+		TurnRight: true,
+		TurnLeft: true,
+		DoNothing: true,
+		GetWorkerInventoryItems: true,
+		ConsoleLog: true,
+		SyncWorkers: true,
+		ThrowItem: true
+	}
+}
+
 // abstracts
 /**
  * Short error function
@@ -28,11 +41,18 @@ function assert(v, m, jsF){
 
 /**
  * Checks if `v` exists within environment.
- * @template {A}
- * @param {A} v
+ * @param {string} v
  * @returns {boolean}
  */
-function vDoesExist(v){return !!v}
+function vDoesExist(v){
+	assert(
+		typeof v == 'string', 
+		"Attempting to use a non string: from: " + 
+			arguments.callee.caller
+	)
+
+	return __settings.boughtFunctions[v]
+}
 
 /**
  * Checks if method does exist
@@ -42,7 +62,8 @@ function vDoesExist(v){return !!v}
  * @returns {A}
  */
 function assertExistance(v, mn){
-	return assert(v, "Method does not exist:" + mn)
+	assert(vDoesExist(mn), "Method does not exist:" + mn)
+	return v;
 }
 
 /**
@@ -83,9 +104,9 @@ CoinWorker.prototype.turnRight = function(x){
  * @see {@link CoinWorker}
  */
 CoinWorker.prototype.turnLeft = function(){
-	if (vDoesExist(TurnLeft))
+	if (vDoesExist('TurnLeft')){
 		TurnLeft()
-	else
+	}else
 		this.turnRight(3)
 }
 
@@ -105,7 +126,7 @@ CoinWorker.prototype.spin = function(){this.turnRight(4)}
  */
 CoinWorker.prototype.doNothing = function(x){
 	x = x || 1
-	const nothing = assertExistance(DoNothing, "Donothing")
+	const nothing = assertExistance(DoNothing, "DoNothing")
 
 	for (let i = 0; i < x; i++) nothing()
 }
@@ -271,3 +292,5 @@ CoinWorker.prototype.safeThrow = function(x){
 
 	return [len != this.getInventoryVol(), result]
 }
+
+const me = new CoinWorker()
