@@ -33,3 +33,16 @@ For this part, we would like to go to the first coin since it is the closest and
 |Yellow|0|4+2a|0|
 
 In this case, yellow is more shorter if the worker bought the left turn but both paths are as efficient if the player didn't buy at all, regardless yellow and left turn is the shortest path by 3 steps.
+
+## Part 2
+This part encompasses all the possibilities, uses the same rules as stated in Stage 2.
+
+![Stage 3 Part 2](https://raw.githubusercontent.com/CHL-a/OutcoreReference/main/Idle_Game/RuntimeAnalysis/ImageBin/Stage3Pt2.png)
+
+|Path|Coins|Steps|Rate|
+|---|---|---|---|
+|Red|1|7|1/7|
+|Orange|1|3|1/3|
+|+Orange|2|10|1/5|
+|Yellow|1|a+12|1/(a+12)|
+|+Yellow|2|a+12|2/(a+12)|
