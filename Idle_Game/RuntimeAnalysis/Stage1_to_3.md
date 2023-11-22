@@ -21,3 +21,15 @@ This table shows the possible routes, the prefix plus in this case combines red'
 Because we want a bigger rate, red and orange makes the better path but yellow brings the most coins.
 
 # Stage 3
+
+## Part 1
+For this part, we would like to go to the first coin since it is the closest and leads to the second closest coin. Because this level unlocks the left turn, it makes the three right turns obsolete since it consumes more steps than a left turn to perform a left turn. Thus, for this table, variable `a` is introduced, representing 1 or 3 steps, and occurs for every left turn.
+
+![Stage 3 Part 1](https://raw.githubusercontent.com/CHL-a/OutcoreReference/main/Idle_Game/RuntimeAnalysis/ImageBin/Stage3Pt1.png)
+
+|Path|Coins|Steps|Rate|
+|---|---|---|---|
+|Orange|0|7+a|0|
+|Yellow|0|4+2a|0|
+
+In this case, yellow is more shorter 
