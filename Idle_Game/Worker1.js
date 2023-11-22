@@ -1,3 +1,16 @@
+// Upfront options:
+const __settings = {
+	boughtFunctions: {
+		TurnRight: true,
+		TurnLeft: true,
+		DoNothing: true,
+		GetWorkerInventoryItems: true,
+		ConsoleLog: true,
+		SyncWorkers: true,
+		ThrowItem: true
+	}
+}
+
 // abstracts
 /**
  * Short error function
@@ -28,11 +41,18 @@ function assert(v, m, jsF){
 
 /**
  * Checks if `v` exists within environment.
- * @template {A}
- * @param {A} v
+ * @param {string} v
  * @returns {boolean}
  */
-function vDoesExist(v){return !!v}
+function vDoesExist(v){
+	assert(
+		typeof v == 'string', 
+		"Attempting to use a non string: from: " + 
+			arguments.callee.caller
+	)
+
+	return __settings.boughtFunctions[v]
+}
 
 /**
  * Checks if method does exist
@@ -42,7 +62,8 @@ function vDoesExist(v){return !!v}
  * @returns {A}
  */
 function assertExistance(v, mn){
-	return assert(v, "Method does not exist:" + mn)
+	assert(vDoesExist(mn), "Method does not exist:" + mn)
+	return v;
 }
 
 /**
@@ -83,9 +104,9 @@ CoinWorker.prototype.turnRight = function(x){
  * @see {@link CoinWorker}
  */
 CoinWorker.prototype.turnLeft = function(){
-	if (vDoesExist(TurnLeft))
+	if (vDoesExist('TurnLeft')){
 		TurnLeft()
-	else
+	}else
 		this.turnRight(3)
 }
 
@@ -105,7 +126,7 @@ CoinWorker.prototype.spin = function(){this.turnRight(4)}
  */
 CoinWorker.prototype.doNothing = function(x){
 	x = x || 1
-	const nothing = assertExistance(DoNothing, "Donothing")
+	const nothing = assertExistance(DoNothing, "DoNothing")
 
 	for (let i = 0; i < x; i++) nothing()
 }
@@ -276,33 +297,45 @@ const me = new CoinWorker()
 
 // stage
 /**@class*/
-function Stage1(){me.moveForward(4)}
+function Stage1(){
+	me.moveForward(4);
+	
+	// has rate of 2c/4steps, or 1c/2steps
+}
 /**@class*/
 function Stage2(){
-	me.moveForward(6)
-	me.turnRight()
-	me.moveForward(6)
-	me.turnRight()
-	me.moveForward(4)
+	me.moveForward(6) // 6
+	me.turnRight()    // 1
+	me.moveForward(6) // 6
+	me.turnRight()    // 1
+	me.moveForward(4) // 4
+
+	// has rate of 4c/18st or 2/9
 }
 /**@class*/
 function Stage3(){
-	me.turnAround()
-	me.moveForward(2)
-	me.turnRight()
-	me.moveForward(2)
 	me.turnLeft()
 	me.moveForward(2)
 	me.turnLeft()
-	me.moveForward(4)
-	me.turnRight()
 	me.moveForward(2)
-	me.turnRight()
-	me.moveForward(9)
+
+	me.moveForward(2) // 2
+	me.turnLeft()     // a
+	me.moveForward(4) // 4
+	me.turnRight()    // 1
+	me.moveForward(2) // 2
+	me.turnRight()    // 1
+	me.moveForward(9) // 9
 }
 
 /**@class*/
-function Stage4(){me.turnAround();me.moveForward(3)}
+function Stage4(){
+	me.turnAround();
+	me.moveForward(3)
+
+	this.getFiveCoins()
+	this.deposit()
+}
 
 /**
  * 
@@ -313,8 +346,8 @@ Stage4.prototype.getCoin = function (x){
 	
 	for (let j = 0; j < x; j++)
 		for (let i = 0; i < 4; i++) {
-			turnLeft()
-			moveForward()
+			me.turnLeft()
+			me.moveForward()
 		}
 }
 
@@ -332,6 +365,11 @@ Stage4.prototype.deposit = function(){
 	me.moveForward(3)
 	me.turnLeft()
 	me.moveForward()
+}
+
+Stage4.prototype.iterate = function(){
+	this.getCoin(4)
+	this.deposit()
 }
 
 /**@class*/
@@ -359,12 +397,9 @@ Stage5.prototype.deposit = function(){
 	me.moveForward(6)
 	
 	// default, has k time
-	// me.spin()
-	
-	// new, has n time
+	me.turnAround()
 	me.depositAllItems()
 
-	me.turnAround()
 	me.moveForward(6)
 	me.turnLeft()
 }
@@ -374,20 +409,18 @@ Stage5.prototype.getRedCoin = function(){
 
 	// depositing
 	me.moveForward(4)
-	me.doNothing(5)
+	me.turnRight()
+	me.doNothing(4)
 	
 	// getting
+	me.moveForward()
+	me.turnLeft()
+	me.moveForward(3)
 	me.turnLeft()
 	me.moveForward()
-	me.turnRight()
-	me.moveForward(3)
-	me.turnRight()
 	me.doNothing(5)
-	me.moveForward()
-	
 	
 	// returning
-	me.turnAround()
 	me.moveForward()
 	me.turnLeft()
 	me.moveForward(7)
@@ -400,6 +433,12 @@ Stage5.prototype.goToRed = function(){
 	me.moveForward(4)
 }
 
+Stage5.prototype.iterate = function(){
+	this.getRedCoin()
+	this.getRedCoin()
+	this.deposit()
+}
+
 /**@class*/
 function Stage6(){
 	me.turnAround()
@@ -407,6 +446,8 @@ function Stage6(){
 	me.turnLeft()
 	me.moveForward(3)
 	me.turnLeft()
+
+	me.deposit(true)
 }
 
 Stage6.prototype.deposit = function(shouldNotYield){
@@ -533,6 +574,7 @@ function Stage8(){
 
 }
 
-while (true) {
-	me.sync()
-}
+const s = new Stage6()
+
+while (true)
+	s.deposit()
