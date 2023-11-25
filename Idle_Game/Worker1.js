@@ -304,13 +304,14 @@ function Stage1(){
 }
 /**@class*/
 function Stage2(){
-	me.moveForward(6) // 6
-	me.turnRight()    // 1
-	me.moveForward(6) // 6
-	me.turnRight()    // 1
-	me.moveForward(4) // 4
+	me.moveForward(4) 
+	me.turnRight()    
+	me.moveForward(6) 
+	me.turnRight()    
+	me.moveForward(2) 
 
-	// has rate of 4c/18st or 2/9
+	// old rate of 4c/18st or 2/9
+	// see performance analysis for change
 }
 /**@class*/
 function Stage3(){
@@ -319,13 +320,16 @@ function Stage3(){
 	me.turnLeft()
 	me.moveForward(2)
 
-	me.moveForward(2) // 2
-	me.turnLeft()     // a
-	me.moveForward(4) // 4
-	me.turnRight()    // 1
-	me.moveForward(2) // 2
-	me.turnRight()    // 1
-	me.moveForward(9) // 9
+	me.moveForward(/*2*/ 2 + 2)
+	/*
+	me.turnLeft()    
+	me.moveForward(4) 
+	me.turnRight()    
+	me.moveForward(2) 
+	*/
+	me.turnRight()    
+	
+	me.moveForward(/*9*/5) 
 }
 
 /**@class*/
@@ -574,7 +578,7 @@ function Stage8(){
 
 }
 
-const s = new Stage6()
+const s = new Stage4()
 
 while (true)
-	s.deposit()
+	s.iterate()
